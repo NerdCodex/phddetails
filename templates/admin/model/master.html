@@ -1,0 +1,171 @@
+{% extends 'admin/base.html' %}
+
+{% block body %}
+
+{{ super() }}
+
+<div class="card">
+    <div class="card-header">
+        Download Sorted Data
+    </div>
+
+    <ul class="list-group">
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+            <h5 class="card-title">Scholars Details
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-file-earmark-spreadsheet-fill" viewBox="0 0 16 16">
+                    <path d="M6 12v-2h3v2z"/>
+                    <path d="M9.293 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V4.707A1 1 0 0 0 13.707 4L10 .293A1 1 0 0 0 9.293 0M9.5 3.5v-2l3 3h-2a1 1 0 0 1-1-1M3 9h10v1h-3v2h3v1h-3v2H9v-2H6v2H5v-2H3v-1h2v-2H3z"/>
+                  </svg>
+            </h5>
+            <button id="exportallbtn" class="btn btn-link">Download Excel</button>
+        </li>
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+            <h5 class="card-title">Caste Category Details
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-file-earmark-word-fill" viewBox="0 0 16 16">
+                    <path d="M9.293 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V4.707A1 1 0 0 0 13.707 4L10 .293A1 1 0 0 0 9.293 0M9.5 3.5v-2l3 3h-2a1 1 0 0 1-1-1M5.485 6.879l1.036 4.144.997-3.655a.5.5 0 0 1 .964 0l.997 3.655 1.036-4.144a.5.5 0 0 1 .97.242l-1.5 6a.5.5 0 0 1-.967.01L8 9.402l-1.018 3.73a.5.5 0 0 1-.967-.01l-1.5-6a.5.5 0 1 1 .97-.242z"/>
+                  </svg>
+            </h5>
+            <button id="castecategorydownloadbtn" class="btn btn-link">Download</button>
+        </li>
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+            <h5 class="card-title">Caste Category Details
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-file-earmark-word-fill" viewBox="0 0 16 16">
+                    <path d="M9.293 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V4.707A1 1 0 0 0 13.707 4L10 .293A1 1 0 0 0 9.293 0M9.5 3.5v-2l3 3h-2a1 1 0 0 1-1-1M5.485 6.879l1.036 4.144.997-3.655a.5.5 0 0 1 .964 0l.997 3.655 1.036-4.144a.5.5 0 0 1 .97.242l-1.5 6a.5.5 0 0 1-.967.01L8 9.402l-1.018 3.73a.5.5 0 0 1-.967-.01l-1.5-6a.5.5 0 1 1 .97-.242z"/>
+                  </svg>
+            </h5>
+            <button id="castecategorydownloadbtn" class="btn btn-link">Download</button>
+        </li>
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+            <h5 class="card-title">Awarded Details
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-file-earmark-word-fill" viewBox="0 0 16 16">
+                    <path d="M9.293 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V4.707A1 1 0 0 0 13.707 4L10 .293A1 1 0 0 0 9.293 0M9.5 3.5v-2l3 3h-2a1 1 0 0 1-1-1M5.485 6.879l1.036 4.144.997-3.655a.5.5 0 0 1 .964 0l.997 3.655 1.036-4.144a.5.5 0 0 1 .97.242l-1.5 6a.5.5 0 0 1-.967.01L8 9.402l-1.018 3.73a.5.5 0 0 1-.967-.01l-1.5-6a.5.5 0 1 1 .97-.242z"/>
+                  </svg>
+            </h5>
+            <button id="awardeddownloadbtn" class="btn btn-link">Download</button>
+        </li>
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+            <h5 class="card-title">Fees Unpaid Details
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-file-earmark-word-fill" viewBox="0 0 16 16">
+                    <path d="M9.293 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V4.707A1 1 0 0 0 13.707 4L10 .293A1 1 0 0 0 9.293 0M9.5 3.5v-2l3 3h-2a1 1 0 0 1-1-1M5.485 6.879l1.036 4.144.997-3.655a.5.5 0 0 1 .964 0l.997 3.655 1.036-4.144a.5.5 0 0 1 .97.242l-1.5 6a.5.5 0 0 1-.967.01L8 9.402l-1.018 3.73a.5.5 0 0 1-.967-.01l-1.5-6a.5.5 0 1 1 .97-.242z"/>
+                  </svg>
+            </h5>
+            <button id="unpaiddownloadbtn" class="btn btn-link">Download</button>
+        </li>
+      </ul>    
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        document.getElementById('castecategorydownloadbtn').addEventListener('click', function() {
+            fetch('/api/category_sort')
+            .then(response => {
+                if (response.ok) {
+                    return response.blob(); // Convert the response to a blob
+                } else {
+                    throw new Error('Failed to generate document');
+                }
+            })
+            .then(blob => {
+                // Create a download link for the blob
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'caste_category_details.docx'; // Set the file name for download
+                document.body.appendChild(a);
+                a.click();  // Trigger the download
+                a.remove(); // Remove the link after download
+                window.URL.revokeObjectURL(url); // Free up memory
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred while generating the document.');
+            });
+        });
+    });
+
+    document.addEventListener('DOMContentLoaded', function() {
+        document.getElementById('awardeddownloadbtn').addEventListener('click', function() {
+            fetch('/api/awarded_sort')
+            .then(response => {
+                if (response.ok) {
+                    return response.blob(); // Convert the response to a blob
+                } else {
+                    throw new Error('Failed to generate document');
+                }
+            })
+            .then(blob => {
+                // Create a download link for the blob
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'awarded_details.docx'; // Set the file name for download
+                document.body.appendChild(a);
+                a.click();  // Trigger the download
+                a.remove(); // Remove the link after download
+                window.URL.revokeObjectURL(url); // Free up memory
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred while generating the document.');
+            });
+        });
+    });
+
+    document.addEventListener('DOMContentLoaded', function() {
+        document.getElementById('unpaiddownloadbtn').addEventListener('click', function() {
+            fetch('/api/unpaid')
+            .then(response => {
+                if (response.ok) {
+                    return response.blob(); // Convert the response to a blob
+                } else {
+                    throw new Error('Failed to generate document');
+                }
+            })
+            .then(blob => {
+                // Create a download link for the blob
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'fees_unpaid_details.docx'; // Set the file name for download
+                document.body.appendChild(a);
+                a.click();  // Trigger the download
+                a.remove(); // Remove the link after download
+                window.URL.revokeObjectURL(url); // Free up memory
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred while generating the document.');
+            });
+        });
+    });
+
+    document.addEventListener('DOMContentLoaded', function() {
+        document.getElementById('exportallbtn').addEventListener('click', function() {
+            fetch('/api/export_all')
+            .then(response => {
+                if (response.ok) {
+                    return response.blob(); // Convert the response to a blob
+                } else {
+                    throw new Error('Failed to generate document');
+                }
+            })
+            .then(blob => {
+                // Create a download link for the blob
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'scholars_details.xlsx'; // Set the file name for download
+                document.body.appendChild(a);
+                a.click();  // Trigger the download
+                a.remove(); // Remove the link after download
+                window.URL.revokeObjectURL(url); // Free up memory
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred while generating the document.');
+            });
+        });
+    });
+</script>
+
+{% endblock %}
