@@ -14,8 +14,8 @@ class Department(db.Model):
     annual_labfees = db.Column(db.BigInteger)
     labfees_year = db.Column(db.BigInteger)
     
-    guides = db.relationship('Guide', back_populates='department', lazy=True)
-    scholars = db.relationship('Details', back_populates='department', lazy=True)
+    guides = db.relationship('Guide', back_populates='department', lazy=True, cascade="all, delete-orphan")
+    scholars = db.relationship('Details', back_populates='department', lazy=True, cascade="all, delete-orphan")
 
     def __repr__(self):
         return (self.dname)
@@ -31,7 +31,7 @@ class Guide(db.Model):
     dno = db.Column(db.BigInteger, db.ForeignKey('department.dno'), nullable=False)
     
     department = db.relationship('Department', back_populates='guides', lazy=True)
-    scholars = db.relationship('Details', back_populates='guide')
+    scholars = db.relationship('Details', back_populates='guide', cascade="all, delete-orphan")
 
     def __repr__(self):
         return self.guide_name
@@ -358,6 +358,10 @@ def calculate_fees_unpaid(mapper, connection, target):
 
     if updated_values:
         tutionfees, labfees, tutionfeespaid, labfeespaid = updated_values
+        tutionfees = 0 if tutionfees == None else tutionfees
+        labfees = 0 if labfees == None else labfees
+        tutionfeespaid = 0 if tutionfeespaid == None else tutionfeespaid
+        labfeespaid = 0 if labfeespaid == None else labfeespaid
 
         # Calculate unpaid fees
         total_center_fees = tutionfees + (labfees if is_labincluded else 0)
