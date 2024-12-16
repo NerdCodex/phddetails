@@ -1,0 +1,48 @@
+{% extends 'admin/model/edit.html' %}
+{% block body %}
+<script src="https://unpkg.com/htmx.org@2.0.3" integrity="sha384-0895/pl2MU10Hqc6jd4RvrthNlDiE9U1tWmX7WRESftEDRosgxNsQG/Ze9YMRzHq" crossorigin="anonymous"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+        // Trigger the department select field change event on page load
+        document.getElementById('department-select').dispatchEvent(new Event('change'));
+    });    
+</script>
+
+  <div class="container mt-5">
+    <h2>Update Fees</h2>
+    <form method="POST" action="{{ url_for('feesupdateview.update') }}">
+      {{ form.hidden_tag() }}
+      <div class="form-group">
+        {{ form.department.label(class="form-label") }}
+        {{ form.department(
+            class="form-control", 
+            id="department-select", 
+            hx_get='/api/get_guides_scholar', 
+            hx_target="#scholar-select", 
+            hx_trigger="change"
+        ) }}
+    </div>
+
+    <div class="form-group">
+        {{ form.scholar_name.label(class="form-label") }}
+        {{ form.scholar_name(
+            class="form-control", 
+            id="scholar-select"
+        ) }}
+    </div>
+
+    <div class="form-group">
+      {{ form.tution_fees_paid.label(class="form-label") }}
+      {{ form.tution_fees_paid(class="form-control") }}
+    </div>
+
+    <div class="form-group" id="labfees-container">
+        {{ form.labfees_paid.label(class="form-label") }}
+        {{ form.labfees_paid(class="form-control", id="labfees-input") }}
+        <input type="hidden" name="labfees_paid" id="labfees-hidden">
+    </div>
+        
+    <input type="submit" value="Update Fees" class="btn btn-primary">
+    </form>
+  </div>
+{% endblock %}

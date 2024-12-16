@@ -1,0 +1,217 @@
+{% extends 'admin/model/create.html' %}
+
+{% block body %}
+<script src="https://unpkg.com/htmx.org@2.0.3" integrity="sha384-0895/pl2MU10Hqc6jd4RvrthNlDiE9U1tWmX7WRESftEDRosgxNsQG/Ze9YMRzHq" crossorigin="anonymous"></script>
+<script>
+    // JavaScript code for handling the dynamic population and toggling of inputs
+   
+    document.addEventListener('DOMContentLoaded', function() {
+        // Trigger the department select field change event on page load
+        document.getElementById('department-select').dispatchEvent(new Event('change'));
+    });
+
+    async function labincludedRequest(department) {
+    try {
+        // Send a GET request to the endpoint with the selected department ID
+        const response = await fetch(`http://127.0.0.1:5000/api/get_labsfees?department=${department}`);
+        const data = await response.json();
+
+        // Access the lab fees field and its container
+        const labFeesField = document.getElementById("labfees-input");
+        const labFeesContainer = document.getElementById("labfees-container");
+
+        // Enable or disable the field based on the response
+        if (data.lab) {
+            labFeesField.disabled = false; // Enable the visible field
+            labFeesHidden.value = labFeesField.value; // Sync the hidden field value
+            labFeesContainer.style.display = ""; // Show the container
+        } else {
+            labFeesField.disabled = true; // Disable the visible field
+            labFeesField.value = ""; // Clear the value
+            labFeesHidden.value = ""; // Clear the hidden field value
+            labFeesContainer.style.display = "none"; // Hide the container
+        }
+
+    } catch (error) {
+        console.error("Error fetching lab inclusion data:", error);
+    }
+}
+
+    
+    </script>
+
+<div>
+    <h1>Create Details Entry</h1>
+    <form method="POST" action="{{ url_for('details.create_view') }}">
+        {{ form.hidden_tag() }}
+
+        <div class="form-group">
+            {{ form.department.label(class="form-label") }}
+            {{ form.department(class="form-control", id="department-select", 
+                hx_get='/api/get_guides_opt', 
+                hx_trigger="change", 
+                hx_target="#guide-select",
+                onchange="labincludedRequest(this.value)",
+                hx_swap="innerHTML") }}
+        </div>
+        
+
+        <div class="form-group">
+            {{ form.guide.label(class="form-label") }}
+            <select class="form-control" id="guide-select" name="guide">
+                <option value="">Select a guide</option>
+                <!-- HTMX will populate this dynamically -->
+            </select>
+        </div>
+
+        <div class="form-group">
+            {{ form.guide_role.label(class="form-label") }}
+            {{ form.guide_role(class="form-control") }}
+        </div>
+
+        <div class="form-group">
+            {{ form.scholar_name.label(class="form-label") }}
+            {{ form.scholar_name(class="form-control") }}
+        </div>
+
+        <div class="form-group">
+            {{ form.gender.label(class="form-label") }}
+            {{ form.gender(class="form-control") }}
+        </div>
+
+        <div class="form-group">
+            {{ form.regno.label(class="form-label") }}
+            {{ form.regno(class="form-control") }}
+        </div>
+
+        <div class="form-group">
+            {{ form.dob.label(class="form-label") }}
+            {{ form.dob(class="form-control") }} <!-- Assuming you want a date input -->
+        </div>
+
+        <div class="form-group">
+            {{ form.timing.label(class="form-label") }}
+            {{ form.timing(class="form-control") }}
+        </div>
+
+        <div class="form-group">
+            {{ form.caste.label(class="form-label") }}
+            {{ form.caste(class="form-control") }}
+        </div>
+
+        <div class="form-group">
+            {{ form.subcaste.label(class="form-label") }}
+            {{ form.subcaste(class="form-control") }}
+        </div>
+
+        <div class="form-group">
+            {{ form.religion.label(class="form-label") }}
+            {{ form.religion(class="form-control") }}
+        </div>
+
+        <div class="form-group">
+            {{ form.email.label(class="form-label") }}
+            {{ form.email(class="form-control") }}
+        </div>
+
+        <div class="form-group">
+            {{ form.phno.label(class="form-label") }}
+            {{ form.phno(class="form-control") }}
+        </div>
+
+        <div class="form-group">
+            {{ form.optionalphno.label(class="form-label") }}
+            {{ form.optionalphno(class="form-control") }}
+        </div>
+
+        <div class="form-group">
+            {{ form.address.label(class="form-label") }}
+            {{ form.address(class="form-control") }}
+        </div>
+
+        <div class="form-group">
+            {{ form.commencement_date.label(class="form-label") }}
+            {{ form.commencement_date(class="form-control", type="date") }} <!-- Assuming you want a date input -->
+        </div>
+
+        <div class="form-group">
+            {{ form.join_date.label(class="form-label") }}
+            {{ form.join_date(class="form-control", type="date") }} <!-- Assuming you want a date input -->
+        </div>
+
+        <div class="form-group">
+            {{ form.last_fee_date.label(class="form-label") }}
+            {{ form.last_fee_date(class="form-control", type="date") }} <!-- Assuming you want a date input -->
+        </div>
+
+        <div class="form-group">
+            {{ form.annual_fee.label(class="form-label") }}
+            {{ form.annual_fee(class="form-control") }}
+        </div>
+
+        <div class="form-group">
+            {{ form.tution_fees_paid.label(class="form-label") }}
+            {{ form.tution_fees_paid(class="form-control") }}
+        </div> 
+
+        <div class="form-group" id="labfees-container">
+            {{ form.labfees_paid.label(class="form-label") }}
+            {{ form.labfees_paid(class="form-control", id="labfees-input") }}
+            <input type="hidden" name="labfees_paid" id="labfees-hidden">
+        </div>
+               
+
+        <div class="form-group">
+            {{ form.no_due_date.label(class="form-label") }}
+            {{ form.no_due_date(class="form-control", type="date") }} <!-- Assuming you want a date input -->
+        </div>
+
+        <div class="form-group">
+            {{ form.viva_date.label(class="form-label") }}
+            {{ form.viva_date(class="form-control", type="date") }} <!-- Assuming you want a date input -->
+        </div>
+
+        <div class="form-group">
+            {{ form.thesis_title.label(class="form-label") }}
+            {{ form.thesis_title(class="form-control") }}
+        </div>
+
+        <div class="form-group">
+            {{ form.status.label(class="form-label") }}
+            {{ form.status(class="form-control") }}
+        </div>
+
+        <div class="form-group">
+            {{ form.first_dc_meet.label(class="form-label") }}
+            {{ form.first_dc_meet(class="form-control", type="date") }} <!-- Assuming you want a date input -->
+        </div>
+
+        <div class="form-group">
+            {{ form.first_dc_fee.label(class="form-label") }}
+            {{ form.first_dc_fee(class="form-control") }}
+        </div>
+
+        <div class="form-group">
+            {{ form.second_dc_meet.label(class="form-label") }}
+            {{ form.second_dc_meet(class="form-control", type="date") }} <!-- Assuming you want a date input -->
+        </div>
+
+        <div class="form-group">
+            {{ form.second_dc_fee.label(class="form-label") }}
+            {{ form.second_dc_fee(class="form-control") }}
+        </div>
+
+        <div class="form-group">
+            {{ form.third_dc_meet.label(class="form-label") }}
+            {{ form.third_dc_meet(class="form-control", type="date") }} <!-- Assuming you want a date input -->
+        </div>
+
+        <div class="form-group">
+            {{ form.third_dc_fee.label(class="form-label") }}
+            {{ form.third_dc_fee(class="form-control") }}
+        </div>
+
+        <input type="submit" value="Create" class="btn btn-primary">
+    </form>
+</div>
+{% endblock %}
