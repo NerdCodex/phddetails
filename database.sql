@@ -83,6 +83,8 @@ create table details(
     constraint statusno_fk foreign key (statusno) references status_(statusno)
 );
 
+drop table details;
+
 /* Functions */
 
 -- Compare Dates
