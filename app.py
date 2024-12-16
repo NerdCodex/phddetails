@@ -1,4 +1,4 @@
-from flask import Flask, render_template, jsonify, send_file, redirect, url_for, flash
+from flask import Flask, render_template, jsonify, send_file, redirect, url_for, flash, after_this_request
 from flask_admin import Admin
 from flask_admin.menu import MenuLink
 from flask_admin.contrib.sqla import ModelView
@@ -7,7 +7,11 @@ from export import *
 from docx import *
 from docx.shared import *
 from docx.enum.text import *
+from utils import *
 import os, json
+import shutil
+
+
 
 config = json.loads(open("config.json", "r").read())
 
@@ -16,6 +20,7 @@ app = Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = f"mysql+pymysql://root:{config["password"]}@localhost/{config["dbname"]}"
 app.config['FLASK_ADMIN_FLUID_LAYOUT'] = True
 app.config['WORD_FILES'] = os.path.join(os.path.dirname(__file__), 'word')
+app.config['BACKUP_FILES'] = os.path.join(os.path.dirname(__file__), 'backup')
 db.init_app(app)
 admin = Admin(app,template_mode='bootstrap4', name="Phd Scholar Archive", index_view=CustomAdminModelView())
 app.secret_key = "23i7jkb8734rjh"
@@ -26,7 +31,9 @@ admin.add_view(GuideModelView(db.session, category="Tables"))
 admin.add_view(StatusModelView(Status, db.session, category="Tables"))
 admin.add_view(DetailsModelView(db.session, category="Tables"))
 admin.add_view(FeesUpdateView(name="Update Fees", category="Fees"))
-admin.add_link(MenuLink(name="Refresh",url='/api/refresh'))
+admin.add_link(MenuLink(name="Refresh",url='/api/refresh', category='Options'))
+admin.add_link(MenuLink(name="Upload Backup",url='/app/upload', category='Options'))
+admin.add_link(MenuLink(name="Backup Tables",url='/api/backup', category='Options'))
 
 @app.route("/api/unpaid")
 def unpaid_scholars():
@@ -219,6 +226,93 @@ def refresh_details():
         return jsonify({"status": "error", "message": str(e)}), 500
 
 
+
+@app.route("/api/backup")
+def backup():
+    department = Department.query.all()
+    guide = Guide.query.all()
+    status = Status.query.all()
+    details = Details.query.all()
+
+    # Define backup path
+    base_path = app.config["BACKUP_FILES"]
+
+    # Write backup files
+    write_excel(f"{base_path}\\department.xlsx", "department", department)
+    write_excel(f"{base_path}\\guide.xlsx", "guide", guide)
+    write_excel(f"{base_path}\\status.xlsx", "status", status)
+    write_excel(f"{base_path}\\details.xlsx", "details", details)
+
+    # Create a ZIP archive
+    zip_file = os.path.join(app.root_path, "backup.zip")
+    shutil.make_archive("backup", "zip", base_path)
+
+    # Schedule ZIP file removal after download
+    @after_this_request
+    def remove_file(response):
+        try:
+            os.remove(zip_file)
+        except Exception as e:
+            print(f"Error deleting file: {e}")
+        return response
+
+    # Send ZIP file as attachment
+    flash("Backup completed successfully.")
+    return send_file(zip_file, as_attachment=True)
+
+
+
+@app.route("/api/upload", methods=["POST"])
+def upload_backup():
+    if "file" not in request.files:
+        flash("No file uploaded.")
+        return redirect("/admin/")
+    
+    file = request.files["file"]
+    table_name = request.form.get("table")
+
+    if file.filename == "":
+        flash("No selected file.")
+        return redirect("/admin/")
+
+    if table_name not in ["department", "guide", "status", "details"]:
+        flash("Invalid table name.")
+        return redirect("/admin/")
+
+    try:
+        # Load the file into a DataFrame
+        df = pd.read_excel(file, engine='openpyxl')
+        df = clean_data(df)
+
+        # Clear the existing table
+        model_map = {
+            "department": Department,
+            "guide": Guide,
+            "status": Status,
+            "details": Details
+        }
+        Model = model_map[table_name]
+        Model.query.delete()
+
+        # Insert new records
+        for _, row in df.iterrows():
+            record = Model(**row.to_dict())
+            db.session.add(record)
+        
+        db.session.commit()
+        flash(f"{table_name.capitalize()} data uploaded successfully.")
+    except Exception as e:
+        db.session.rollback()
+        flash(f"Upload failed: {str(e)}")
+
+    return redirect("/admin/")
+
+@app.route("/app/upload")
+def backup_upload():
+    return render_template("backup_upload.html")
+
+
 if __name__ == "__main__":
     app.run(debug=True)
+
 
